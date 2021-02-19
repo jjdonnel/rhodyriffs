@@ -51,7 +51,7 @@ const store = new MongoDBStore({
 });
 
 store.on('error', function (e) {
-    console.log('SESSION STORE ERROR', e)
+    // console.log('SESSION STORE ERROR', e)
 });
 
 const sessionConfig = {
@@ -76,7 +76,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
-    console.log(req.session);
+    // console.log(req.session);
     res.locals.currentUser = req.user;
     next();
 })
@@ -171,14 +171,15 @@ app.post('/songs', isLoggedIn, upload.single('image'), async (req, res) => {
     console.log(song);
     song.author = req.user._id;
     song.image = req.file.path;
+    console.log(song.image);
     await song.save();
-    console.log(req.body.song);
+    // console.log(req.body.song);
     res.redirect(`/songs/${song._id}`);
 })
 
 app.get('/songs/:id', async function(req, res) {
     const song = await Song.findById(req.params.id).populate('author');
-    console.log(song);
+    // console.log(song);
     // console.log(song.user.username);
     res.render('songs/show', { song });
 });
@@ -209,7 +210,7 @@ app.use((error, req, res, next) => {
       },
       
     });
-    console.log(error);
+    // console.log(error);
 
   });
 
