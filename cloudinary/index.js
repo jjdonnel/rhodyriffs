@@ -14,7 +14,8 @@ const storage = new CloudinaryStorage({
     params: {
         folder: 'videos',
         allowedFormats: ['mp4', 'mov', 'ogg', 'jpeg', 'wmv', 'png', 'jpg'],
-        resource_type: 'auto'
+        resource_type: 'auto',
+        transformation: [{ poster: 'true' }]
     }
 });
 
