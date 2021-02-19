@@ -1,0 +1,33 @@
+<% layout('layouts/boilerplate') %>
+
+    <div class="row">
+        <h1 class="text-center">Edit Song</h1>
+        <div class="col-6 offset-3">
+            <form action="/songs/<%= song._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+                <div>
+                    <label class="form-label" for="title">Title</label>
+                    <input class="form-control" type="text" id="title" name="song[title]" value="<%= song.title %>">
+                </div>
+                <!-- <input type="file" name="image" id="image"> -->
+                <!-- <div>
+                    <label class="form-label" for="image">Image</label>
+                    <input class="form-control" type="text" id="image" name="song[image]" accept="<%= song.image %>">
+                </div> -->
+                <!-- <div>
+                    <label class="form-label" for="artist">Artist</label>
+                    <input class="form-control" type="text" id="artist" name="song[artist]" value="<%= song.artist %>">
+                </div> -->
+                <div class="mb-3">
+                    <label class="form-label" for="description">description</label>
+                    <input class="form-control" type="text" id="description" name="song[description]" value="<%= song.description %>">
+                </div>
+                <div class="mb-3">
+                    <button class="btn btn-success">Update Song</button>
+                </div>
+            </form>
+            <button>
+                <a href="/songs/<%= song._id %>">Back to Song</a>
+            </button>
+        </div>
+    </div>
+    

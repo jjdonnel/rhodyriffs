@@ -1,0 +1,37 @@
+body, div {
+    display: flex;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    justify-content: center;
+}
+
+body {
+    /* background-image: linear-gradient(rgb(4, 0, 53), rgb(122, 55, 0)); */
+    background-image: linear-gradient(to bottom right, blue, rgb(6, 240, 103));
+    background-size: cover;
+    font-size: 2em;
+    color: rgba(200,200,200,0.8);
+    height: 100vh;
+}
+
+main {
+height: auto;
+align-items: center;
+justify-content: center;
+text-align: center;
+}
+
+h1 {
+    font-weight: lighter;
+}
+button {
+    background-color: rgba(0,0,0,0.5);
+    font-weight: bold;
+    border-radius: 20%;
+    padding: 0.5em;
+}
+
+a {
+    color: rgba(200,200,200,0.7);
+    text-decoration: none;
+}
