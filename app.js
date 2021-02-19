@@ -15,7 +15,10 @@ const Song = require('./models/song');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
+const MongoDBStore = require('connect-mongo')(session);
 // const bcrypt = require('bcrypt');
+
+// const dbUrl = 'mongodb+srv://jjdonnel:Florid@99@cluster0.dnozp.mongodb.net/vlogs?retryWrites=true&w=majority';
 
 mongoose.connect('mongodb+srv://jjdonnel:Florid@99@cluster0.dnozp.mongodb.net/vlogs?retryWrites=true&w=majority', {
     useNewUrlParser: true,
@@ -41,7 +44,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+const store = new MongoDBStore({
+    url: 'mongodb+srv://jjdonnel:Florid@99@cluster0.dnozp.mongodb.net/vlogs?retryWrites=true&w=majority',
+    secret: 'thisshouldbeabettersecret!',
+    touchAfter: 24 * 60 * 60
+});
+
+store.on('error', function (e) {
+    console.log('SESSION STORE ERROR', e)
+});
+
 const sessionConfig = {
+    store,
     secret: 'thisshouldbeabettersecret!',
     resave: false,
     saveUninitialized: true,
@@ -199,6 +213,6 @@ app.use((error, req, res, next) => {
 
   });
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log('Serving on port 3000')  
 })
