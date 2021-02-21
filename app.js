@@ -171,6 +171,7 @@ app.post('/songs', isLoggedIn, upload.single('image'), async (req, res) => {
     console.log(song._id);
     song.author = req.user._id;
     song.image = req.file.path;
+    res.locals.poster = song.image+'#t=0.1';
     // console.log(song.image);
     await song.save();
     // console.log(req.body.song);

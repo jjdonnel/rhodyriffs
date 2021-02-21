@@ -4,7 +4,7 @@
         <h2 class="card-title"><%= song.title %></h2>
         
             <video width="auto" height="600" controls preload="auto">
-                <source src="<%= song.image %>">
+                <source src="<%= song.image %>#t=0.001">
             </video>
             <p class="card-text fs-5 fw-bold"><%= song.description %></p>
             <p class="card-text fs-6">submitted by <%= song.author.username %></p>
