@@ -1,7 +1,7 @@
 if (process.env.NODE_ENV !== "production") {
     require("DOTENV").config();
 };
-
+const cloudinary = require('cloudinary').v2;
 const express = require('express');
 const path = require('path');
 const methodOverride = require('method-override');
@@ -168,10 +168,10 @@ app.get('/songs/new', async (req, res) => {
 
 app.post('/songs', isLoggedIn, upload.single('image'), async (req, res) => {
     const song = new Song(req.body.song);
-    console.log(song);
+    console.log(song._id);
     song.author = req.user._id;
     song.image = req.file.path;
-    console.log(song.image);
+    // console.log(song.image);
     await song.save();
     // console.log(req.body.song);
     res.redirect(`/songs/${song._id}`);
