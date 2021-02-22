@@ -5,6 +5,24 @@ body, div {
     justify-content: center;
 }
 
+@keyframes intro {
+    0% { 
+        opacity: 0;
+    }
+    100% { 
+        opacity: 1;
+
+    }
+}
+
+@keyframes move {
+    0% {
+        align-items: top;
+    }
+    100% {
+        align-items: center;
+    }
+}
 body {
     /* background-image: linear-gradient(rgb(4, 0, 53), rgb(122, 55, 0)); */
     background-image: linear-gradient(to bottom right, blue, rgb(6, 240, 103));
@@ -13,25 +31,37 @@ body {
     color: rgba(200,200,200,0.8);
     height: 100vh;
     text-shadow: 2px 2px 8px black;
+    
 }
 
 main {
+    font-style:italic;
 height: auto;
 align-items: center;
 justify-content: center;
 text-align: center;
+animation: move 2s; 
 }
 
 h1 {
+        /* font-size: 72px; */
+        background: -webkit-linear-gradient(rgb(255, 255, 200), rgb(255, 255, 150));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: intro 1s;
+
     font-weight: lighter;
 }
+    
 button {
-    background-color: rgba(0,0,0,0.2);
+    background-color: rgba(0,0,0,0.0);
     font-weight: bold;
+    border: none;
     border-radius: 10%;
     padding: 0.5em;
     font-size: 0.5em;
     text-shadow: 2px 2px 4px black;
+    animation: intro 6s;
 }
 
 a {
