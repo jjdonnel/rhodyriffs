@@ -158,7 +158,7 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 })
 app.get('/songs', async (req, res) => {
-    const songs = await Song.find({});
+    const songs = await (await Song.find({})).reverse();
     res.render('songs/index', { songs });
 })
 
@@ -171,7 +171,7 @@ app.post('/songs', isLoggedIn, upload.single('image'), async (req, res) => {
     console.log(song._id);
     song.author = req.user._id;
     song.image = req.file.path;
-    res.locals.poster = song.image+'#t=0.1';
+    // res.locals.poster = song.image+'#t=0.1';
     // console.log(song.image);
     await song.save();
     // console.log(req.body.song);
