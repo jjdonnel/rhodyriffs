@@ -186,16 +186,38 @@ app.get('/songs/:id', async function(req, res) {
 });
 
 app.get('/songs/:id/edit', async (req, res) => {
-    const song = await Song.findById(req.params.id)
+    const song = await Song.findById(req.params.id);
+    
     // res.send("It Worked!")
     res.render('songs/edit', { song });
 })
 
+// app.put('/songs/:id', isLoggedIn, upload.single('image'), async (req, res) => {
+//     const { id } = req.params;
+//     const song = await Song.findByIdAndUpdate(id, { ...req.body.song });
+//     console.log(song);
+//     res.redirect(`/songs/${song._id}`);
+// })
 app.put('/songs/:id', isLoggedIn, upload.single('image'), async (req, res) => {
-    const { id } = req.params;
-    const song = await Song.findByIdAndUpdate(id, { ...req.body.song });
-    res.redirect(`/songs/${song._id}`);
-})
+    try {
+     let song = await Song.findById(req.params.id);
+        await cloudinary.uploader.destroy(song._id);
+            const result = await cloudinary.uploader.upload(req.file.path, { resource_type: 'video' });
+            const data = {
+                image: result.secure_url,
+                imageId: result.public_id
+            };
+            const { id } = req.params;
+            song = await Song.findByIdAndUpdate(id, data, { ...req.body.song });
+            // song.title = req.body.title;
+            // song.description = req.body.description;
+            await song.save();
+            res.redirect(`/songs/${song._id}`); 
+            console.log(song);
+            } catch (err) {
+                console.log(err);
+            }
+        });
 
 app.delete('/songs/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
