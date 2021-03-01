@@ -192,12 +192,44 @@ app.get('/songs/:id/edit', async (req, res) => {
     res.render('songs/edit', { song });
 })
 
-// app.put('/songs/:id', isLoggedIn, upload.single('image'), async (req, res) => {
-//     const { id } = req.params;
-//     const song = await Song.findByIdAndUpdate(id, { ...req.body.song });
-//     console.log(song);
-//     res.redirect(`/songs/${song._id}`);
+// app.get('/songs/:id/edittd', async (req, res) => {
+//     const song = await Song.findById(req.params.id);
+    
+//     // res.send("It Worked!")
+//     res.render('songs/edittd', { song });
 // })
+
+app.put('/songs/:id', isLoggedIn, upload.single('image'), async (req, res) => {
+    const { id } = req.params;
+    const song = await Song.findByIdAndUpdate(id, { ...req.body.song });
+    console.log(song);
+    res.redirect('/songs/edit');
+})
+
+// app.put('/songs/:id', isLoggedIn, upload.single('image'), (req, res) => {
+    
+//             const { id } = req.params;
+//             const data = {
+//                 title: req.body.title,
+//                 description: req.body.description
+//             };
+//             const song = Song.findByIdAndUpdate(id, {...req.body.song });
+//             console.log(id);
+//         // song = await Song.findByIdAndUpdate(id, {...req.body.song }, async () => {
+//             // try {
+//              cloudinary.uploader.destroy(id)
+//             .then(() => {
+//                  cloudinary.uploader.upload(req.file.path, { resource_type: 'video' });
+//             })
+//                 .catch ((err) => {
+//                     console.log(err);
+//                 })
+//             res.redirect(`/songs/${song._id}`); 
+//             console.log(song);
+//             // .catch ((err) => {
+//             //     console.log(err);
+//             });
+
 app.put('/songs/:id', isLoggedIn, upload.single('image'), async (req, res) => {
     try {
      let song = await Song.findById(req.params.id);
@@ -207,13 +239,13 @@ app.put('/songs/:id', isLoggedIn, upload.single('image'), async (req, res) => {
                 image: result.secure_url,
                 imageId: result.public_id
             };
-            const { id } = req.params;
-            song = await Song.findByIdAndUpdate(id, data, { ...req.body.song });
+            // const { id } = req.params;
+            song = await Song.findByIdAndUpdate(req.params.id, data, { ...req.body.song });
             // song.title = req.body.title;
             // song.description = req.body.description;
             await song.save();
             res.redirect(`/songs/${song._id}`); 
-            console.log(song);
+            console.log(song,);
             } catch (err) {
                 console.log(err);
             }
