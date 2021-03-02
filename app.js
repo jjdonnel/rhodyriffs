@@ -105,12 +105,6 @@ const catchAsync = func => {
     }
 }
 
-// app.get('/fakeUser', async (req, res) => {
-//     const user = new User({ email: 'jak@gmail.com', username: 'jakkk' });
-//     const newUser = await User.register(user, 'chicken');
-//     res.send(newUser);
-// })
-
 app.get('/', (req, res) => {
     res.render('home');
 })
@@ -171,7 +165,6 @@ app.post('/songs', isLoggedIn, upload.single('image'), async (req, res) => {
     console.log(song._id);
     song.author = req.user._id;
     song.image = req.file.path;
-    // res.locals.poster = song.image+'#t=0.1';
     // console.log(song.image);
     await song.save();
     // console.log(req.body.song);
@@ -197,23 +190,23 @@ app.put('/songs/:id', isLoggedIn, upload.single('image'), async (req, res) => {
      let song = await Song.findById(req.params.id);
      let music = req.body.song;
      console.log(req.body.song);
-        await cloudinary.uploader.destroy(song._id);
-            const result = await cloudinary.uploader.upload(req.file.path, { resource_type: 'video' });
-            const data = {
-                image: result.secure_url,
-                imageId: result.public_id
-            };
-            // const { id } = req.params;
-            song = await Song.findByIdAndUpdate(req.params.id, data, { ...req.body.song });
-            song.title = music.title;
-            song.description = music.description;
-            await song.save();
-            res.redirect(`/songs/${song._id}`); 
-            
-            } catch (err) {
-                console.log(err);
-            }
-        });
+    await cloudinary.uploader.destroy(song._id);
+        const result = await cloudinary.uploader.upload(req.file.path, { resource_type: 'video' });
+        const data = {
+            image: result.secure_url,
+            imageId: result.public_id
+        };
+        // const { id } = req.params;
+        song = await Song.findByIdAndUpdate(req.params.id, data, { ...req.body.song });
+        song.title = music.title;
+        song.description = music.description;
+        await song.save();
+        res.redirect(`/songs/${song._id}`); 
+        
+    } catch (err) {
+        console.log(err);
+    }
+});
 
 app.delete('/songs/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
@@ -229,8 +222,7 @@ app.use((error, req, res, next) => {
       },
       
     });
-    // console.log(error);
-
+    console.log(error);
   });
 
 app.listen(process.env.PORT || 3000, () => {
