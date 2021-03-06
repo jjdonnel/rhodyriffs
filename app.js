@@ -10,14 +10,19 @@ const multer = require('multer');
 const { storage } = require('./cloudinary');
 const upload = multer({ storage });
 const ejsMate = require('ejs-mate');
+const flash = require('connect-flash');
 const session = require('express-session');
+const { isLoggedIn, isAuthor, catchAsync } = require('./middleware');
 const Song = require('./models/song');
+const songs = require('./controllers/songs');
+const users = require('./controllers/users');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 const MongoDBStore = require('connect-mongo')(session);
+const songRoutes = require('./routes/songs');
+const userRoutes = require('./routes/users');
 // const bcrypt = require('bcrypt');
-
 // const dbUrl = 'mongodb+srv://jjdonnel:Florid@99@cluster0.dnozp.mongodb.net/vlogs?retryWrites=true&w=majority';
 
 mongoose.connect('mongodb+srv://jjdonnel:Florid@99@cluster0.dnozp.mongodb.net/vlogs?retryWrites=true&w=majority', {
@@ -68,6 +73,7 @@ const sessionConfig = {
 
 app.use(session(sessionConfig));
 
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
@@ -78,141 +84,13 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
     // console.log(req.session);
     res.locals.currentUser = req.user;
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
     next();
 })
 
-const isLoggedIn = (req, res, next) => {
-    req.session.returnTo = req.originalUrl;
-    // console.log("REQ.USER...", req.user);
-    if (!req.isAuthenticated()) {
-        return res.redirect('/login');
-    }
-    next();
-}
-
-const isAuthor = async (req, res, next) => {
-    const { id } = req.params;
-    const song = await Song.findById(id);
-    if (!song.author.equals(req.user._id)) {
-        return res.redirect(`/songs/${id}`);
-    }
-    next();
-}
-
-const catchAsync = func => {
-    return (req, res, next) => {
-        func(req, res, next).catch(next);
-    }
-}
-
-app.get('/', (req, res) => {
-    res.render('home');
-})
-
-app.get('/register', (req, res) => {
-    res.render('register');
-})
-
-app.post('/register', async (req, res) => {
-    try {
-        const { email, username, password } = req.body;
-        const user = new User({ email, username });
-        const registeredUser = await User.register(user, password);
-        req.login(registeredUser, err => {
-            if (err) return next(err);
-            res.redirect('/songs');
-        })
-    } catch (e) {
-        // req.session.user_id = user._id;
-        res.redirect('register');
-    }
-    });
-
-app.get('/login', (req, res) => {
-    res.render('login');
-})
-
-app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), (req, res) => {
-    // const { username, password } = req.body;
-    // const foundUser = await User.findAndValidate(username, password);
-    // console.log(username);
-    // if (foundUser) {
-    //     req.session.user_id = foundUser._id;
-    const redirectUrl = req.session.returnTo || '/songs';
-    delete req.session.returnTo;
-        res.redirect(redirectUrl);
-    // } else {
-    //     res.redirect('login');
-    // }
-});
-
-app.get('/logout', (req, res) => {
-    req.logout();
-    // req.session.user_id = null;
-    res.redirect('/');
-})
-app.get('/songs', async (req, res) => {
-    const songs = await (await Song.find({})).reverse();
-    res.render('songs/index', { songs });
-})
-
-app.get('/songs/new', async (req, res) => {
-    res.render('songs/new');
-})
-
-app.post('/songs', isLoggedIn, upload.single('image'), async (req, res) => {
-    const song = new Song(req.body.song);
-    console.log(song._id);
-    song.author = req.user._id;
-    song.image = req.file.path;
-    // console.log(song.image);
-    await song.save();
-    // console.log(req.body.song);
-    res.redirect(`/songs/${song._id}`);
-})
-
-app.get('/songs/:id', async function(req, res) {
-    const song = await Song.findById(req.params.id).populate('author');
-    // console.log(song);
-    // console.log(song.user.username);
-    res.render('songs/show', { song });
-});
-
-app.get('/songs/:id/edit', async (req, res) => {
-    const song = await Song.findById(req.params.id);
-    
-    // res.send("It Worked!")
-    res.render('songs/edit', { song });
-})
-
-app.put('/songs/:id', isLoggedIn, upload.single('image'), async (req, res) => {
-    try {
-     let song = await Song.findById(req.params.id);
-     let music = req.body.song;
-     console.log(req.body.song);
-    await cloudinary.uploader.destroy(song._id);
-        const result = await cloudinary.uploader.upload(req.file.path, { resource_type: 'video' });
-        const data = {
-            image: result.secure_url,
-            imageId: result.public_id
-        };
-        // const { id } = req.params;
-        song = await Song.findByIdAndUpdate(req.params.id, data, { ...req.body.song });
-        song.title = music.title;
-        song.description = music.description;
-        await song.save();
-        res.redirect(`/songs/${song._id}`); 
-        
-    } catch (err) {
-        console.log(err);
-    }
-});
-
-app.delete('/songs/:id', isLoggedIn, async (req, res) => {
-    const { id } = req.params;
-    await Song.findByIdAndDelete(id);
-    res.redirect('/songs');
-})
+app.use('/', songRoutes)
+app.use('/', userRoutes)
 
 app.use((error, req, res, next) => {
     res.status(error.status || 500).send({
