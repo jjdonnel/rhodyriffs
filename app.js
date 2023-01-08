@@ -1,5 +1,5 @@
 if (process.env.NODE_ENV !== "production") {
-    require("DOTENV").config();
+    require("dotenv").config();
 };
 const cloudinary = require('cloudinary').v2;
 const express = require('express');
