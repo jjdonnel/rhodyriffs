@@ -22,6 +22,9 @@ const User = require('./models/user');
 const MongoDBStore = require('connect-mongo')(session);
 const songRoutes = require('./routes/songs');
 const userRoutes = require('./routes/users');
+
+const bodyParser = require('body-parser');
+
 // const bcrypt = require('bcrypt');
 // const dbUrl = 'mongodb+srv://jjdonnel:Florid@99@cluster0.dnozp.mongodb.net/vlogs?retryWrites=true&w=majority';
 
@@ -45,9 +48,12 @@ app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(bodyParser.json({limit: '100mb'}));
+app.use(bodyParser.urlencoded({limit: '100mb', extended: true}));
 
 const store = new MongoDBStore({
     url: 'mongodb+srv://jjdonnel:Florid@99@cluster0.dnozp.mongodb.net/vlogs?retryWrites=true&w=majority',
