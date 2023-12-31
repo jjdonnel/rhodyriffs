@@ -25,7 +25,7 @@ const userRoutes = require('./routes/users');
 // const bcrypt = require('bcrypt');
 // const dbUrl = 'mongodb+srv://jjdonnel:Florid@99@cluster0.dnozp.mongodb.net/vlogs?retryWrites=true&w=majority';
 
-mongoose.connect('mongodb+srv://jjdonnel:Florid@02201971@cluster0.dnozp.mongodb.net/vlogs?retryWrites=true&w=majority', {
+mongoose.connect('mongodb+srv://jjdonnel:Florid@99@cluster0.dnozp.mongodb.net/vlogs?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
@@ -50,7 +50,7 @@ app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const store = new MongoDBStore({
-    url: 'mongodb+srv://jjdonnel:Florid@02201971@cluster0.dnozp.mongodb.net/vlogs?retryWrites=true&w=majority',
+    url: 'mongodb+srv://jjdonnel:Florid@99@cluster0.dnozp.mongodb.net/vlogs?retryWrites=true&w=majority',
     secret: 'thisshouldbeabettersecret!',
     touchAfter: 24 * 60 * 60
 });
